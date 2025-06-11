@@ -33,40 +33,56 @@ class Game {
     
     checkColisiones() {
         setInterval(() => {
-            this.monedas.forEach((moneda, index) => {
-                if (this.personaje.colisionaCon(moneda)) {
-                    this.container.removeChild(moneda.element);
-                    this.monedas.splice(index, 1);
-                    this.actualizarPuntuacion(10);
+            if (!this.juegoTerminado) {
+                this.monedas.forEach((moneda, index) => {
+                    if (this.personaje.colisionaCon(moneda)) {
+                        this.container.removeChild(moneda.element);
+                        this.monedas.splice(index, 1);
+                        this.actualizarPuntuacion(10);
 
-                }
-            });
+                    }
+                });
+            }
 
         }, 100);
     }
     actualizarPuntuacion(puntos) {
-    this.puntuacion += puntos;
-    this.puntosElement.textContent = `Puntos: ${this.puntuacion}`;
-  }
-  /*temporizador*/
-  iniciarTemporizador() {
-  this.temporizador = setInterval(() => {
-    if (this.tiempoRestante > 0) {
-      this.tiempoRestante--;
-      this.tiempoElement.textContent = `Tiempo: ${this.tiempoRestante}`;
-    } else {
-      clearInterval(this.temporizador);
-      this.terminarJuego();
+        this.puntuacion += puntos;
+        this.puntosElement.textContent = `Puntos: ${this.puntuacion}`;
+        
+        // Verificar si se alcanzan los 100 puntos para ganar
+        if (this.puntuacion >= 100 && !this.juegoTerminado) {
+            this.ganarJuego();
+        }
     }
-  }, 1000);
-}
-/*terminar juego*/
-terminarJuego() {
-  this.juegoTerminado = true;
-  alert("¡Tiempo agotado!");
-}
+    
+    /*función para ganar el juego*/
+    ganarJuego() {
+        this.juegoTerminado = true;
+        clearInterval(this.temporizador);
+        alert("¡Felicidades! ¡Has ganado el juego con 100 puntos!");
+    }
+    
+    /*temporizador*/
+    iniciarTemporizador() {
+        this.temporizador = setInterval(() => {
+            if (this.tiempoRestante > 0 && !this.juegoTerminado) {
+                this.tiempoRestante--;
+                this.tiempoElement.textContent = `Tiempo: ${this.tiempoRestante}`;
+            } else if (this.tiempoRestante <= 0 && !this.juegoTerminado) {
+                clearInterval(this.temporizador);
+                this.terminarJuego();
+            }
+        }, 1000);
+    }
+    
+    /*terminar juego*/
+    terminarJuego() {
+        this.juegoTerminado = true;
+        alert("¡Tiempo agotado!");
+    }
 
-    }
+}
     
 
 class Personaje{
