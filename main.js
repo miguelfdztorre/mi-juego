@@ -3,6 +3,8 @@ class Game {
         this.container = document.getElementById("game-container");
         this.personaje = null;
         this.monedas = [];
+        this.rocas = [];
+
         this.puntuacion = 0;
         this.crearEscenario();
         this.agregarEventos();
@@ -23,6 +25,18 @@ class Game {
             this.container.appendChild(moneda.element);
 
         }
+        const posicionesRocas = [
+         { x: 300, y: 300 },
+        { x: 600, y: 100 },
+        { x: 900, y: 480 }
+       ];
+
+        posicionesRocas.forEach(pos => {
+        const roca = new Roca(pos.x, pos.y);
+        this.rocas.push(roca);
+        this.container.appendChild(roca.element);
+      });
+
 
     }
     agregarEventos() {
@@ -44,6 +58,11 @@ class Game {
                     }
                 });
             }
+          this.rocas.forEach(roca => {
+          if (this.personaje.colisionaCon(roca)) {
+          this.perderJuego();
+  }
+});
 
         }, 100);
     }
@@ -93,8 +112,16 @@ class Game {
         this.juegoTerminado = true;
         alert("¡Tiempo agotado!");
     }
+    /*perder juego*/
+    perderJuego() {
+    this.juegoTerminado = true;
+    clearInterval(this.temporizador);
+    alert("¡Has perdido! Chocaste con una roca.");
+}
+
 
 }
+
     
 
 class Personaje{
@@ -209,4 +236,17 @@ class Moneda {
   }
 
 }
+class Roca {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 50;
+    this.height = 50;
+    this.element = document.createElement("div");
+    this.element.classList.add("roca");
+    this.element.style.left = `${this.x}px`;
+    this.element.style.top = `${this.y}px`;
+  }
+}
+
 const juego = new Game();
