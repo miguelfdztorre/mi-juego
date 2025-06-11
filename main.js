@@ -28,6 +28,7 @@ class Game {
     agregarEventos() {
         window.addEventListener("keydown", (e) => this.personaje.mover(e));
         this.checkColisiones();
+        this.moverMonedas();
     }
 
     
@@ -54,6 +55,17 @@ class Game {
         if (this.puntuacion >= 100 && !this.juegoTerminado) {
             this.ganarJuego();
         }
+    }
+    
+    /*mover monedas flotantes*/
+    moverMonedas() {
+        setInterval(() => {
+            if (!this.juegoTerminado) {
+                this.monedas.forEach(moneda => {
+                    moneda.mover();
+                });
+            }
+        }, 50);
     }
     
     /*función para ganar el juego*/
@@ -160,9 +172,37 @@ class Moneda {
     this.height = 30;
     this.element = document.createElement("div");
     this.element.classList.add("moneda");
+    
+    // Propiedades para el movimiento flotante
+    this.velocidadY = (Math.random() * 2 + 1) * (Math.random() > 0.5 ? 1 : -1); // Velocidad entre -3 y 3
+    this.yOriginal = this.y;
+    this.rangoMovimiento = 30 + Math.random() * 40; // Rango de movimiento entre 30 y 70 pixels
 
     this.actualizarPosicion();
   }
+  
+  mover() {
+    // Movimiento flotante vertical
+    this.y += this.velocidadY;
+    
+    // Cambiar dirección si se sale del rango permitido
+    if (this.y > this.yOriginal + this.rangoMovimiento || this.y < this.yOriginal - this.rangoMovimiento) {
+      this.velocidadY *= -1;
+    }
+    
+    // Mantener dentro de los límites del juego
+    if (this.y < 30) {
+      this.y = 30;
+      this.velocidadY = Math.abs(this.velocidadY);
+    }
+    if (this.y > 570) {
+      this.y = 570;
+      this.velocidadY = -Math.abs(this.velocidadY);
+    }
+    
+    this.actualizarPosicion();
+  }
+  
   actualizarPosicion() {
     this.element.style.left = `${this.x}px`;
     this.element.style.top = `${this.y}px`;
