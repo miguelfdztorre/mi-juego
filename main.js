@@ -6,6 +6,10 @@ class Game {
         this.rocas = [];
 
         this.puntuacion = 0;
+
+        // <<< OBTENEMOS EL ELEMENTO DE AUDIO DE LA MONEDA
+        this.sonidoMoneda = document.getElementById("sonidoMoneda");
+
         this.crearEscenario();
         this.agregarEventos();
         this.puntosElement = document.getElementById("puntos");
@@ -14,6 +18,12 @@ class Game {
         this.tiempoElement = document.getElementById("tiempo");
         this.juegoTerminado = false;
         this.iniciarTemporizador();
+
+        /*musica*/
+        this.musicaFondo = document.getElementById("musica-fondo");
+        this.musicaIniciada = false; // Una bandera para controlar la música
+
+        
 
     }
     crearEscenario(){
@@ -28,7 +38,7 @@ class Game {
         const posicionesRocas = [
          { x: 300, y: 300 },
         { x: 600, y: 100 },
-        { x: 900, y: 480 }
+        { x: 800, y: 350 },
        ];
 
         posicionesRocas.forEach(pos => {
@@ -51,6 +61,8 @@ class Game {
             if (!this.juegoTerminado) {
                 this.monedas.forEach((moneda, index) => {
                     if (this.personaje.colisionaCon(moneda)) {
+                      // <<< REPRODUCIMOS EL SONIDO DE LA MONEDA
+                        this.reproducirSonidoMoneda();
                         this.container.removeChild(moneda.element);
                         this.monedas.splice(index, 1);
                         this.actualizarPuntuacion(10);
@@ -65,6 +77,12 @@ class Game {
 });
 
         }, 100);
+    }
+      // <<< NUEVA FUNCIÓN PARA REPRODUCIR EL SONIDO
+    reproducirSonidoMoneda() {
+        // Ponemos el tiempo del audio a 0 para que pueda sonar muchas veces seguidas
+        this.sonidoMoneda.currentTime = 0; 
+        this.sonidoMoneda.play();
     }
     actualizarPuntuacion(puntos) {
         this.puntuacion += puntos;
@@ -127,7 +145,7 @@ class Game {
 class Personaje{
     constructor() {
         this.x = 50;
-        this.y = 480;
+        this.y = 400;
         this.width = 50;
         this.height = 50;
         this.velocidad = 10;
@@ -166,7 +184,7 @@ class Personaje{
   }
     caer() {
     const gravedad = setInterval(() => {
-      if (this.y < 480) {
+      if (this.y < 450) {
         this.y += 10;
       } else {
         clearInterval(gravedad);
@@ -248,5 +266,13 @@ class Roca {
     this.element.style.top = `${this.y}px`;
   }
 }
+document.getElementById("botonMusica").addEventListener("click", () => {
+    const audio = document.getElementById("musica");
+    audio.play().catch(error => {
+      console.log("Error al reproducir audio:", error);
+    });
+  });
+
+  
 
 const juego = new Game();
