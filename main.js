@@ -145,7 +145,7 @@ class Game {
 class Personaje{
     constructor() {
         this.x = 50;
-        this.y = 400;
+        this.y = 460;
         this.width = 50;
         this.height = 50;
         this.velocidad = 10;
